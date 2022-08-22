@@ -1,0 +1,7 @@
+name: EmojiReplacer
+version: '${project.version}'
+main: me.gabo6480.emojireplacer.EmojiReplacer
+api-version: 1.19
+depend: [ DiscordSRV ]
+authors: [ Gabo6480 ]
+description: A plugin for DiscordSRV so minecraft chat messages reflected to discord can use discord emojis
