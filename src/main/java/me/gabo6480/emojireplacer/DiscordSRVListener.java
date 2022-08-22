@@ -18,14 +18,14 @@ public class DiscordSRVListener {
         this.plugin = plugin;
     }
 
-    @Subscribe(priority = ListenerPriority.MONITOR)
+    @Subscribe(priority = ListenerPriority.NORMAL)
     public void configReloaded(ConfigReloadedEvent event){
         //Event called when discordsrv's config get reloaded.
-
+        plugin.getLogger().info("Reloading EmojiReplacer.");
         ConfigUtil.load();
     }
 
-    @Subscribe(priority = ListenerPriority.MONITOR)
+    @Subscribe(priority = ListenerPriority.NORMAL)
     public void aMessageWasSentInADiscordGuildByTheBot(GameChatMessagePostProcessEvent event) {
         // Example of logging a message sent in Minecraft (being sent to Discord)
 
@@ -36,7 +36,6 @@ public class DiscordSRVListener {
         });
 
         event.setProcessedMessage(processedMessage.get());
-
     }
 
     private String putEmoji(String emoji, String emojiReplace, String origin, String target){
