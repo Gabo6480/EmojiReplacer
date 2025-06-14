@@ -8,6 +8,7 @@ import github.scarsz.discordsrv.api.ListenerPriority;
 
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +31,8 @@ public class DiscordSRVListener {
         // Example of logging a message sent in Minecraft (being sent to Discord)
 
         AtomicReference<String> processedMessage = new AtomicReference<>(event.getProcessedMessage());
+
+        plugin.getLogger().fine("Replacing emojis: " + processedMessage.get());
 
         ConfigUtil.emojiMap.forEach((emoji, emojiReplace) -> {
             processedMessage.set(putEmoji(emoji, emojiReplace, processedMessage.get().toLowerCase(Locale.ROOT), processedMessage.get()));
