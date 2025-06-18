@@ -1,15 +1,18 @@
 package me.gabo6480.emojireplacer;
 
+import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 
 public class ConfigHelper {
     private final String name;
     private File configFile;
+    @Getter
     private YamlConfiguration yamlConfig;
     private final Plugin plugin;
 
@@ -21,33 +24,28 @@ public class ConfigHelper {
     }
 
     private void load() {
-        this.configFile = new File(plugin.getDataFolder(), this.name + ".yml");
+        this.configFile = new File(plugin.getDataFolder(), this.name + ".yaml");
         try {
             if (!this.configFile.exists()) {
-                if (this.configFile.getParentFile().exists() || this.configFile.getParentFile().mkdirs()) {
-                    plugin.saveResource(this.name + ".yml", true);
-                    this.configFile.createNewFile();
-                }
+                boolean ign1 = this.configFile.getParentFile().mkdirs();
+                boolean ign2 = this.configFile.createNewFile();
             }
 
-            this.yamlConfig = new YamlConfiguration();
-            this.yamlConfig.load(this.configFile);
+            this.yamlConfig = YamlConfiguration.loadConfiguration(this.configFile);
 
-        }catch (Exception e) {
+            this.yamlConfig.save(this.configFile);
+        } catch (Exception e) {
             e.printStackTrace();
-            plugin.getLogger().warning(this.name + ".yml Config failed to load! ^^ Reason above ^^");
+            plugin.getLogger().warning(this.name + ".yaml Config failed to load! ^^ Reason above ^^");
         }
     }
 
     public void save() {
         try{
-            if (this.configFile.exists()) {
-                this.yamlConfig.save(this.configFile);
-            }
-            else load();
+            this.yamlConfig.save(this.name + ".yaml");
         }catch (Exception e) {
             e.printStackTrace();
-            plugin.getLogger().warning(this.name + ".yml Config failed to save! ^^ Reason above ^^");
+            plugin.getLogger().warning(this.name + ".yaml Config failed to save! ^^ Reason above ^^");
 
         }
     }
@@ -56,10 +54,6 @@ public class ConfigHelper {
     public FileConfiguration reload() {
         load();
         return getYamlConfig();
-    }
-
-    public YamlConfiguration getYamlConfig() {
-        return yamlConfig;
     }
 
     public File getConfigFile() {
