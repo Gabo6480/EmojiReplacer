@@ -41,7 +41,7 @@ public class ConfigHelper {
 
     public void save() {
         try{
-            this.yamlConfig.save(this.name + ".yaml");
+            this.yamlConfig.save(plugin.getDataFolder().getAbsolutePath() + File.separatorChar + this.name + ".yaml");
         }catch (Exception e) {
             e.printStackTrace();
             plugin.getLogger().warning(this.name + ".yaml Config failed to save! ^^ Reason above ^^");

@@ -31,6 +31,12 @@ public final class EmojiReplacer extends JavaPlugin {
 
         //ConfigUtil.clearGuildEmoteMap();
 
+        DownloadEmotes();
+
+        DiscordSRV.api.subscribe(discordsrvListener);
+    }
+
+    public void DownloadEmotes(){
         List<Guild> guilds = DiscordSRV.getPlugin().getJda().getGuilds();
         LOGGER.info("Found " + guilds.size() + " connected guilds!");
         for (Guild guild : guilds) {
@@ -42,12 +48,10 @@ public final class EmojiReplacer extends JavaPlugin {
                 ConfigUtil.addGuildEmote(guild.getId(), emote.getName(), emote.getId());
 
                 LOGGER.info(emote.getImageUrl());
-                downloadImage(emote.getImageUrl(),  this.getDataFolder().getAbsolutePath() + File.pathSeparatorChar + "files" + File.pathSeparatorChar + guild.getId() + File.pathSeparatorChar + emote.getName() + (emote.isAnimated() ? ".gif" : ".png"));
+                downloadImage(emote.getImageUrl(),  this.getDataFolder().getAbsolutePath() + File.separatorChar + "files" + File.separatorChar + guild.getId() + File.separatorChar + emote.getName() + (emote.isAnimated() ? ".gif" : ".png"));
             }
         }
         ConfigUtil.save();
-
-        DiscordSRV.api.subscribe(discordsrvListener);
     }
 
     @Override

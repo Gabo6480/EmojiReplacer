@@ -1,10 +1,12 @@
 package me.gabo6480.emojireplacer;
 
 import lombok.Getter;
+import org.bukkit.configuration.ConfigurationSection;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ConfigUtil {
     static private final ConfigHelper emotes = new ConfigHelper("emotes", EmojiReplacer.INSTANCE);
@@ -17,18 +19,29 @@ public class ConfigUtil {
 
         guildEmoteMap.clear();
 
-        emotes.getYamlConfig().getValues(false).forEach((key, value) -> {
-            guildEmoteMap.put(key, (Map<String, String>) value);
-        });
+        ConfigurationSection section = emotes.getYamlConfig();
+
+        if(section != null) {
+            section.getValues(false).forEach((key, value) -> {
+                ConfigurationSection subSection =  section.getConfigurationSection(key);
+                if(subSection != null) {
+                    Map<String,Object> map = subSection.getValues(false);
+                    Map<String,String> newMap = map.entrySet().stream()
+                            .collect(Collectors.toMap(Map.Entry::getKey, e -> (String)e.getValue()));
+                    guildEmoteMap.put(key, newMap );
+                }
+                else guildEmoteMap.put(key, new HashMap<>());
+            });
+        }
     }
 
     public static void save(){
 
-        //boolean deleted = emotes.getConfigFile().delete();
+        boolean deleted = emotes.getConfigFile().delete();
 
-        //guildEmoteMap.forEach(((s, stringStringMap) -> emotes.getYamlConfig().set(s, stringStringMap)));
+        guildEmoteMap.forEach(((s, stringStringMap) -> emotes.getYamlConfig().set(s, stringStringMap)));
 
-        //emotes.save();
+        emotes.save();
     }
 
     public static void clearGuildEmoteMap(){
